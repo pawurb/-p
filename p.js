@@ -1,7 +1,8 @@
 console.log("wip");
 
 var P = {
-  status: 'wip'
+  status: 'wip',
+  deferred: function() {}
 }
 
 module.exports = P

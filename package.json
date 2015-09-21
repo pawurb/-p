@@ -30,6 +30,7 @@
     "gulp-jshint": "1.7.x",
     "coveralls": "2.11.x",
     "istanbul": "0.3.x",
-    "mocha-lcov-reporter": "0.0.1"
+    "mocha-lcov-reporter": "0.0.1",
+    "promises-aplus-tests": "*"
   }
 }
