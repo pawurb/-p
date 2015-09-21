@@ -1,4 +1,4 @@
 # p
 
-A simple promise library.
+A simple promises library.
 
