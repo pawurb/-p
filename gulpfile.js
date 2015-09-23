@@ -5,6 +5,7 @@ var mocha  = require('gulp-mocha');
 
 var swallowErr = function(err) {
   console.log(err.toString());
+  this.emit('end');
 }
 
 gulp.task('default', function() {
@@ -20,6 +21,6 @@ gulp.task('lint', function() {
 
 gulp.task('test', function () {
   gulp.src('./test/*_test.js', { read: false })
-  .pipe(mocha({reporter: 'nyan'}))
+  .pipe(mocha({reporter: 'nyan', timeout: 500}))
   .on('error', swallowErr);
 });
