@@ -5,33 +5,28 @@ var Promise = function() {
   this.successCb = null;
   this.errorCb = null;
 
-  var that = this;
   this.then = function(cb) {
-    that.successCb = cb;
-    that._state = 'resolved';
-    return that;
+    this.successCb = cb;
+    return this;
   };
   this.catch = function(cb) {
-    that.errorCb = cb;
-    that._state = 'rejected';
+    this.errorCb = cb;
   };
+  this.resolve = function(data) {
+    this._state = 'resolved';
+    this.successCb(data);
+  },
+  this.reject = function(data) {
+    this._state = 'rejected';
+    this.errorCb(data);
+  }
+  this.promise = this;
 };
 
-var promise_instance = new Promise();
-
 var P = {
-  status: 'wip',
   defer: function() {
-    return {
-      resolve: function(data) {
-        promise_instance.successCb(data);
-      },
-      reject: function(data) {
-        promise_instance.errorCb(data);
-      }
-    };
-  },
-  promise: promise_instance
+    return new Promise();
+  }
 };
 
 module.exports = P;
