@@ -17,21 +17,21 @@ var Promise = function() {
   };
 };
 
-var promiseInstance = new Promise();
+var promise_instance = new Promise();
 
 var P = {
   status: 'wip',
   defer: function() {
     return {
-      resolve: function() {
-        promiseInstance.successCb();
+      resolve: function(data) {
+        promise_instance.successCb(data);
       },
-      reject: function() {
-        promiseInstance.errorCb();
+      reject: function(data) {
+        promise_instance.errorCb(data);
       }
     };
   },
-  promise: promiseInstance
+  promise: promise_instance
 };
 
 module.exports = P;
