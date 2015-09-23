@@ -1,11 +1,19 @@
 console.log("wip");
 
 var Promise = function() {
-  this._state = 'dupa';
-  this.callback = null;
+  this._state = 'initialized';
+  this.successCb = null;
+  this.errorCb = null;
+
   var that = this;
   this.then = function(cb) {
-    that.callback = cb;
+    that.successCb = cb;
+    that._state = 'resolved';
+    return that;
+  };
+  this.catch = function(cb) {
+    that.errorCb = cb;
+    that._state = 'rejected';
   };
 };
 
@@ -16,7 +24,10 @@ var P = {
   defer: function() {
     return {
       resolve: function() {
-        promiseInstance.callback();
+        promiseInstance.successCb();
+      },
+      reject: function() {
+        promiseInstance.errorCb();
       }
     };
   },
