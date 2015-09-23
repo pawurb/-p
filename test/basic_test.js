@@ -7,7 +7,6 @@ describe('basic then case', function() {
     var deferred = P.defer();
 
     deferred.promise.then(function() {
-      expect(true).to.eq(true);
       done();
     });
 
@@ -20,7 +19,6 @@ describe('basic catch case', function() {
     var deferred = P.defer();
 
     deferred.promise.catch(function() {
-      expect(true).to.eq(true);
       done();
     });
 
@@ -34,7 +32,6 @@ describe('chaining then and catch case', function() {
       var deferred = P.defer();
 
       deferred.promise.then(function() {
-        expect(true).to.eq(true);
         done();
       })
       .catch(function() {
@@ -53,7 +50,6 @@ describe('chaining then and catch case', function() {
         throw('This should not happen.');
       })
       .catch(function() {
-        expect(true).to.eq(true);
         done();
       });
 
@@ -68,7 +64,6 @@ describe("promise resolved before registering then", function() {
     deferred.resolve();
 
     deferred.promise.then(function() {
-      expect(true).to.eq(true);
       done();
     });
   });
@@ -80,7 +75,6 @@ describe("promise rejected before registering then", function() {
     deferred.reject();
 
     deferred.promise.catch(function() {
-      expect(true).to.eq(true);
       done();
     });
   });
