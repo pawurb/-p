@@ -1,5 +1,5 @@
 var expect = require("chai").expect;
-var context = describe
+var context = describe;
 var P = require('../p.js');
 
 describe('basic then case', function() {
@@ -38,7 +38,7 @@ describe('chaining then and catch case', function() {
         done();
       })
       .catch(function() {
-        throw('This should not happen.')
+        throw('This should not happen.');
       });
 
       deferred.resolve();
@@ -50,7 +50,7 @@ describe('chaining then and catch case', function() {
       var deferred = P.defer();
 
       deferred.promise.then(function() {
-        throw('This should not happen.')
+        throw('This should not happen.');
       })
       .catch(function() {
         expect(true).to.eq(true);
@@ -58,6 +58,30 @@ describe('chaining then and catch case', function() {
       });
 
       deferred.reject();
+    });
+  });
+});
+
+describe("promise resolved before registering then", function() {
+  it("still works", function(done) {
+    var deferred = P.defer();
+    deferred.resolve();
+
+    deferred.promise.then(function() {
+      expect(true).to.eq(true);
+      done();
+    });
+  });
+});
+
+describe("promise rejected before registering then", function() {
+  it("still works", function(done) {
+    var deferred = P.defer();
+    deferred.reject();
+
+    deferred.promise.catch(function() {
+      expect(true).to.eq(true);
+      done();
     });
   });
 });

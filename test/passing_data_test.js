@@ -1,5 +1,5 @@
 var expect = require("chai").expect;
-var context = describe
+var context = describe;
 var P = require('../p.js');
 
 describe('promise resolved with data', function() {

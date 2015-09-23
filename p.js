@@ -1,25 +1,40 @@
 console.log("wip");
 
 var Promise = function() {
-  this._state = 'initialized';
-  this.successCb = null;
-  this.errorCb = null;
+  var _state = 'pending';
+  var _successCb = null;
+  var _errorCb = null;
+  var _value = null;
 
   this.then = function(cb) {
-    this.successCb = cb;
-    return this;
+    _successCb = cb;
+    if(_state == 'resolved') {
+      return _successCb();
+    } else {
+      return this;
+    }
   };
   this.catch = function(cb) {
-    this.errorCb = cb;
+    _errorCb = cb;
+    if(_state == 'rejected') {
+      return _errorCb();
+    } else {
+      return this;
+    }
   };
-  this.resolve = function(data) {
-    this._state = 'resolved';
-    this.successCb(data);
+  this.resolve = function(value) {
+    _value = value;
+    _state = 'resolved';
+    if(_successCb) {
+      _successCb(value);
+    }
   },
-  this.reject = function(data) {
-    this._state = 'rejected';
-    this.errorCb(data);
-  }
+  this.reject = function(value) {
+    _state = 'rejected';
+    if(_errorCb) {
+      _errorCb(value);
+    }
+  };
   this.promise = this;
 };
 
