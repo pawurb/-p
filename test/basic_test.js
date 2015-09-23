@@ -4,34 +4,34 @@ var P = require('../p.js');
 
 describe('basic then case', function() {
   it('works', function(done){
-    var deffered = P.defer();
+    var deferred = P.defer();
 
     P.promise.then(function() {
       expect(true).to.eq(true);
       done();
     });
 
-    deffered.resolve();
+    deferred.resolve();
   });
 });
 
 describe('basic catch case', function() {
   it('works', function(done){
-    var deffered = P.defer();
+    var deferred = P.defer();
 
     P.promise.catch(function() {
       expect(true).to.eq(true);
       done();
     });
 
-    deffered.reject();
+    deferred.reject();
   });
 });
 
 describe('chaining then and catch case', function() {
   context('promise resolved', function() {
     it('works', function(done){
-      var deffered = P.defer();
+      var deferred = P.defer();
 
       P.promise.then(function() {
         expect(true).to.eq(true);
@@ -41,13 +41,13 @@ describe('chaining then and catch case', function() {
         throw('This should not happen.')
       });
 
-      deffered.resolve();
+      deferred.resolve();
     });
   });
 
   context('promise rejected', function() {
     it('works', function(done){
-      var deffered = P.defer();
+      var deferred = P.defer();
 
       P.promise.then(function() {
         throw('This should not happen.')
@@ -57,7 +57,7 @@ describe('chaining then and catch case', function() {
         done();
       });
 
-      deffered.reject();
+      deferred.reject();
     });
   });
 });
