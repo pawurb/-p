@@ -79,3 +79,33 @@ describe("promise rejected before registering then", function() {
     });
   });
 });
+
+describe("multiple success callbacks set", function() {
+  it("resolves them all", function(done) {
+    var resolved_1 = false;
+    var resolved_2 = false;
+
+    var deferred = P.defer();
+    deferred.promise.then(function() {
+      resolved_1 = true;
+    });
+
+    deferred.promise.then(function() {
+      resolved_2 = true;
+    });
+
+    deferred.promise.then(function() {
+      expect(resolved_1).to.equal(true);
+      expect(resolved_2).to.equal(true);
+      done();
+    });
+
+    deferred.resolve();
+  });
+});
+
+describe("multiple error callbacks set", function() {
+  it("resolves them all", function() {
+
+  });
+});
