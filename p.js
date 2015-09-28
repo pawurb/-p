@@ -11,17 +11,24 @@ var wrapVal = function (value) {
 
 var Promise = function() {
   var _state = 'pending';
-  this._pendingCbs = [];
-  var _errorCb = null;
+  this._pendingSucc = [];
+  this._pendingErr = [];
   var _value = null;
 
   this.executeSuccesses = function(value) {
-    for(var i=0; i<this._pendingCbs.length; i+=1) {
-      this._pendingCbs[i](value);
+    for(var i=0; i<this._pendingSucc.length; i+=1) {
+      this._pendingSucc[i](value);
     }
   };
+
+  this.executeError = function(value) {
+    for(var i=0; i<this._pendingErr.length; i+=1) {
+      this._pendingErr[i](value);
+    }
+  };
+
   this.then = function(cb) {
-    this._pendingCbs.push(cb);
+    this._pendingSucc.push(cb);
     if(_state == 'resolved') {
       this.executeSuccesses();
       return this;
@@ -30,9 +37,10 @@ var Promise = function() {
     }
   };
   this.catch = function(cb) {
-    _errorCb = cb;
+    this._pendingErr.push(cb)
     if(_state == 'rejected') {
-      return _errorCb();
+      this.executeError();
+      return this;
     } else {
       return this;
     }
@@ -44,9 +52,7 @@ var Promise = function() {
   },
   this.reject = function(value) {
     _state = 'rejected';
-    if(_errorCb) {
-      _errorCb(value);
-    }
+    this.executeError(value);
   };
   this.promise = this;
 };

@@ -105,7 +105,25 @@ describe("multiple success callbacks set", function() {
 });
 
 describe("multiple error callbacks set", function() {
-  it("resolves them all", function() {
+  it("resolves them all", function(done) {
+    var rejected_1 = false;
+    var rejected_2 = false;
 
+    var deferred = P.defer();
+    deferred.promise.catch(function() {
+      rejected_1 = true;
+    });
+
+    deferred.promise.catch(function() {
+      rejected_2 = true;
+    });
+
+    deferred.promise.catch(function() {
+      expect(rejected_1).to.equal(true);
+      expect(rejected_2).to.equal(true);
+      done();
+    });
+
+    deferred.reject();
   });
 });
