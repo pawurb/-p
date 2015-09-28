@@ -19,7 +19,7 @@ describe('promise rejected with data', function() {
   var deferred = P.defer();
 
   it('passes it on', function(done){
-    deferred.promise.catch(function(data) {
+    deferred.promise.fail(function(data) {
       expect(data).to.eq('error_data');
       done();
     });

@@ -1,74 +1,86 @@
-// detect promise callback resolution type or wrap in a promise like thenable api if it is not a promise
-var wrapVal = function (value) {
-  if (value && typeof value.then === "function")
-    return value;
-  return {
-    then: function (callback) {
-      return wrapVal(callback(value));
-    }
-  };
-};
+var promiseMaker = function() {
+  return (function() {
+    // detect promise callback resolution type or wrap in a promise like thenable api if it is not a promise
+    var wrapVal = function (value) {
+      if (value && typeof value.then === "function")
+        return value;
+      return {
+        then: function (callback) {
+          return wrapVal(callback(value));
+        }
+      };
+    };
 
-var Promise = function() {
-  var _state = 'pending';
-  this._pendingSucc = [];
-  this._pendingErr = [];
-  var _value = null;
+    var _state = 'pending';
+    var _pendingSucc = [];
+    var _pendingErr = [];
+    var _value = null;
 
-  this.executeSuccesses = function(value) {
-    for(var i=0; i<this._pendingSucc.length; i+=1) {
-      this._pendingSucc[i](value);
-    }
-  };
+    var executeSuccesses = function(value) {
+      for(var i=0; i<_pendingSucc.length; i+=1) {
+        _pendingSucc[i](value);
+      }
+    };
 
-  this.executeError = function(value) {
-    for(var i=0; i<this._pendingErr.length; i+=1) {
-      this._pendingErr[i](value);
-    }
-  };
+    var executeErrors = function(value) {
+      for(var i=0; i<_pendingErr.length; i+=1) {
+        _pendingErr[i](value);
+      }
+    };
 
-  this.then = function(cb) {
-    this._pendingSucc.push(cb);
-    if(_state == 'resolved') {
-      this.executeSuccesses();
-      return this;
-    } else {
-      return this;
-    }
-  };
-  this.catch = function(cb) {
-    this._pendingErr.push(cb)
-    if(_state == 'rejected') {
-      this.executeError();
-      return this;
-    } else {
-      return this;
-    }
-  };
-  this.resolve = function(value) {
-    _value = wrapVal(value);
-    if(_state == 'pending') {
-      _state = 'resolved';
-      this.executeSuccesses(value);
-    } else {
-      throw("Promise can be resolved only once.");
-    }
-  },
-  this.reject = function(value) {
-    if(_state == 'pending') {
-      _state = 'rejected';
-      this.executeError(value);
-    } else {
-      throw("Promise can be rejected only once.");
-    }
-  };
-  this.promise = this;
+    var then = function(cb) {
+      _pendingSucc.push(cb);
+      if(_state == 'resolved') {
+        executeSuccesses();
+        return promise;
+      } else {
+        return promise;
+      }
+    };
+    var fail = function(cb) {
+      _pendingErr.push(cb)
+      if(_state == 'rejected') {
+        executeErrors();
+        return promise;
+      } else {
+        return promise;
+      }
+    };
+    var resolve = function(value) {
+      _value = wrapVal(value);
+      if(_state == 'pending') {
+        _state = 'resolved';
+        executeSuccesses(value);
+      } else {
+        throw("Promise can be resolved only once.");
+      }
+    };
+    var reject = function(value) {
+      if(_state == 'pending') {
+        _state = 'rejected';
+        executeErrors(value);
+      } else {
+        throw("Promise can be rejected only once.");
+      }
+    };
+
+    var promise = {
+      then: then,
+      fail: fail,
+    };
+
+    var public_api = {
+      promise: promise,
+      resolve: resolve,
+      reject: reject
+    };
+
+    return public_api;
+  })();
 };
 
 var P = {
-  defer: function() {
-    return new Promise();
-  }
-};
+  defer: promiseMaker
+}
 
 module.exports = P;

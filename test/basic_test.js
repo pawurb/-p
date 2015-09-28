@@ -5,6 +5,7 @@ var P = require('../p.js');
 describe('basic then case', function() {
   it('works', function(done){
     var deferred = P.defer();
+    console.log(deferred);
 
     deferred.promise.then(function() {
       done();
@@ -14,11 +15,11 @@ describe('basic then case', function() {
   });
 });
 
-describe('basic catch case', function() {
+describe('basic fail case', function() {
   it('works', function(done){
     var deferred = P.defer();
 
-    deferred.promise.catch(function() {
+    deferred.promise.fail(function() {
       done();
     });
 
@@ -26,7 +27,7 @@ describe('basic catch case', function() {
   });
 });
 
-describe('chaining then and catch case', function() {
+describe('chaining then and fail case', function() {
   context('promise resolved', function() {
     it('works', function(done){
       var deferred = P.defer();
@@ -34,7 +35,7 @@ describe('chaining then and catch case', function() {
       deferred.promise.then(function() {
         done();
       })
-      .catch(function() {
+      .fail(function() {
         throw('This should not happen.');
       });
 
@@ -49,7 +50,7 @@ describe('chaining then and catch case', function() {
       deferred.promise.then(function() {
         throw('This should not happen.');
       })
-      .catch(function() {
+      .fail(function() {
         done();
       });
 
@@ -74,7 +75,7 @@ describe("promise rejected before registering then", function() {
     var deferred = P.defer();
     deferred.reject();
 
-    deferred.promise.catch(function() {
+    deferred.promise.fail(function() {
       done();
     });
   });
@@ -110,15 +111,15 @@ describe("multiple error callbacks set", function() {
     var rejected_2 = false;
 
     var deferred = P.defer();
-    deferred.promise.catch(function() {
+    deferred.promise.fail(function() {
       rejected_1 = true;
     });
 
-    deferred.promise.catch(function() {
+    deferred.promise.fail(function() {
       rejected_2 = true;
     });
 
-    deferred.promise.catch(function() {
+    deferred.promise.fail(function() {
       expect(rejected_1).to.equal(true);
       expect(rejected_2).to.equal(true);
       done();
