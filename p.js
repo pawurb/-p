@@ -38,18 +38,13 @@ function promiseMaker() {
       _pendingSucc.push(callback);
       if(_state == 'resolved') {
         executeSuccesses();
-        return promise;
-      } else {
-        return promise;
       }
+      return chainedPromise.promise;
     };
     var fail = function(cb) {
       _pendingErr.push(cb);
       if(_state == 'rejected') {
         executeErrors();
-        return promise;
-      } else {
-        return promise;
       }
     };
     var resolve = function(value) {
@@ -84,7 +79,7 @@ function promiseMaker() {
 
     return public_api;
   })();
-};
+}
 
 var P = {
   defer: promiseMaker

@@ -5,7 +5,6 @@ var P = require('../p.js');
 describe('basic then case', function() {
   it('works', function(done){
     var deferred = P.defer();
-    console.log(deferred);
 
     deferred.promise.then(function() {
       done();
