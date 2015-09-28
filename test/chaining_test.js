@@ -2,7 +2,7 @@ var expect = require("chai").expect;
 var context = describe;
 var P = require('../p.js');
 
-describe('basic chainging', function() {
+describe('basic chaining', function() {
   it('resolves the promise one by one', function(done){
     var deferred_1 = P.defer();
     var deferred_2 = P.defer();
@@ -19,7 +19,7 @@ describe('basic chainging', function() {
   });
 });
 
-describe('chainging with propagation error', function() {
+describe('chaining with propagation error', function() {
   it('works like it should', function(done){
     var deferred_1 = P.defer();
     var deferred_2 = P.defer();
@@ -39,7 +39,7 @@ describe('chainging with propagation error', function() {
   });
 });
 
-describe('continuous chainging', function() {
+describe('continuous chaining', function() {
   it('resolves the chain elements one by one', function(done){
     var deferred_1 = P.defer();
 
