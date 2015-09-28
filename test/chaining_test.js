@@ -17,7 +17,26 @@ describe('basic chainging', function() {
 
     deferred_1.resolve();
   });
+});
 
+describe('continuous chainging', function() {
+  it('resolves the chain elements one by one', function(done){
+    var deferred_1 = P.defer();
+
+    deferred_1.promise.then(function() {
+      return 1;
+    })
+    .then(function(val) {
+      expect(val).to.equal(1);
+      return 2;
+    })
+    .then(function(val) {
+      expect(val).to.equal(2);
+      done();
+    });
+
+    deferred_1.resolve();
+  });
 });
 
 describe("should not resolve promises automatically", function() {
