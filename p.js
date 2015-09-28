@@ -1,14 +1,16 @@
-var promiseMaker = function() {
+function promiseMaker() {
   return (function() {
     // detect promise callback resolution type or wrap in a promise like thenable api if it is not a promise
     var wrapVal = function (value) {
-      if (value && typeof value.then === "function")
+      if (value && typeof value.then === "function") {
         return value;
-      return {
-        then: function (callback) {
-          return wrapVal(callback(value));
-        }
-      };
+      } else {
+        return {
+          then: function (callback) {
+            return wrapVal(callback(value));
+          }
+        };
+      }
     };
 
     var _state = 'pending';
@@ -16,20 +18,24 @@ var promiseMaker = function() {
     var _pendingErr = [];
     var _value = null;
 
-    var executeSuccesses = function(value) {
+    var executeSuccesses = function() {
       for(var i=0; i<_pendingSucc.length; i+=1) {
-        _pendingSucc[i](value);
+        _value.then(_pendingSucc[i]);
       }
     };
 
-    var executeErrors = function(value) {
+    var executeErrors = function() {
       for(var i=0; i<_pendingErr.length; i+=1) {
-        _pendingErr[i](value);
+        _value.then(_pendingErr[i]);
       }
     };
 
     var then = function(cb) {
-      _pendingSucc.push(cb);
+      var chainedPromise = promiseMaker();
+      var callback = function(value) {
+        chainedPromise.resolve(cb(value));
+      };
+      _pendingSucc.push(callback);
       if(_state == 'resolved') {
         executeSuccesses();
         return promise;
@@ -38,7 +44,7 @@ var promiseMaker = function() {
       }
     };
     var fail = function(cb) {
-      _pendingErr.push(cb)
+      _pendingErr.push(cb);
       if(_state == 'rejected') {
         executeErrors();
         return promise;
@@ -50,15 +56,16 @@ var promiseMaker = function() {
       _value = wrapVal(value);
       if(_state == 'pending') {
         _state = 'resolved';
-        executeSuccesses(value);
+        executeSuccesses();
       } else {
         throw("Promise can be resolved only once.");
       }
     };
     var reject = function(value) {
+      _value = wrapVal(value);
       if(_state == 'pending') {
         _state = 'rejected';
-        executeErrors(value);
+        executeErrors();
       } else {
         throw("Promise can be rejected only once.");
       }
@@ -81,6 +88,6 @@ var promiseMaker = function() {
 
 var P = {
   defer: promiseMaker
-}
+};
 
 module.exports = P;
