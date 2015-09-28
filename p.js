@@ -18,14 +18,14 @@ function promiseMaker() {
     var _pendingErr = [];
     var _value = null;
 
-    var executeSuccesses = function() {
-      for(var i=0; i<_pendingSucc.length; i+=1) {
+    var executeCallbacks = function() {
+      for(var i=0; i < _pendingSucc.length; i+=1) {
         _value.then(_pendingSucc[i]);
       }
     };
 
-    var executeErrors = function() {
-      for(var i=0; i<_pendingErr.length; i+=1) {
+    var executeErrbacks = function() {
+      for(var i=0; i < _pendingErr.length; i+=1) {
         _value.then(_pendingErr[i]);
       }
     };
@@ -37,30 +37,33 @@ function promiseMaker() {
       };
       _pendingSucc.push(callback);
       if(_state == 'resolved') {
-        executeSuccesses();
+        executeCallbacks();
       }
       return chainedPromise.promise;
     };
+
     var fail = function(cb) {
       _pendingErr.push(cb);
       if(_state == 'rejected') {
-        executeErrors();
+        executeErrbacks();
       }
     };
+
     var resolve = function(value) {
       _value = wrapVal(value);
       if(_state == 'pending') {
         _state = 'resolved';
-        executeSuccesses();
+        executeCallbacks();
       } else {
         throw("Promise can be resolved only once.");
       }
     };
+
     var reject = function(value) {
       _value = wrapVal(value);
       if(_state == 'pending') {
         _state = 'rejected';
-        executeErrors();
+        executeErrbacks();
       } else {
         throw("Promise can be rejected only once.");
       }

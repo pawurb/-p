@@ -19,6 +19,26 @@ describe('basic chainging', function() {
   });
 });
 
+describe('chainging with propagation error', function() {
+  it('works like it should', function(done){
+    var deferred_1 = P.defer();
+    var deferred_2 = P.defer();
+
+    deferred_1.promise.then(function() {
+      deferred_2.reject();
+      return deferred_2.promise;
+    })
+    .then(function() {
+      throw("This should never happen :D");
+    })
+    .fail(function() {
+      done();
+    });
+
+    deferred_1.resolve();
+  });
+});
+
 describe('continuous chainging', function() {
   it('resolves the chain elements one by one', function(done){
     var deferred_1 = P.defer();
@@ -48,7 +68,7 @@ describe("should not resolve promises automatically", function() {
       return deferred_2.promise;
     })
     .then(function(data) {
-      throw("Should not get here.");
+      throw("This should never happen :D");
     });
 
     deferred_1.resolve();
@@ -68,7 +88,7 @@ describe("should not resolve promises automatically", function() {
       return deferred_2.promise;
     })
     .then(function(data) {
-      throw("Should not get here.");
+      throw("This should never happen :D");
     });
 
     setTimeout(function(){
