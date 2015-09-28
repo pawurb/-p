@@ -47,12 +47,20 @@ var Promise = function() {
   };
   this.resolve = function(value) {
     _value = wrapVal(value);
-    _state = 'resolved';
-    this.executeSuccesses(value);
+    if(_state == 'pending') {
+      _state = 'resolved';
+      this.executeSuccesses(value);
+    } else {
+      throw("Promise can be resolved only once.");
+    }
   },
   this.reject = function(value) {
-    _state = 'rejected';
-    this.executeError(value);
+    if(_state == 'pending') {
+      _state = 'rejected';
+      this.executeError(value);
+    } else {
+      throw("Promise can be rejected only once.");
+    }
   };
   this.promise = this;
 };
